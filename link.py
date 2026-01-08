@@ -5,18 +5,21 @@ from hermespy.simulation import SimulationScenario, SCIdealChannelEstimation
 from hermespy.modem import SimplexLink, RootRaisedCosineWaveform, SCZeroForcingChannelEqualization
 
 # Simulation parameters
-cf = 26e9
-bw = 1e9
+device_params = {
+    'oversampling_factor': 4,
+    'carrier_frequency': 6e9,
+    'bandwidth': 960e6,
+}
 
 # Create a simulation scenario
 scenario = SimulationScenario()
 
 # Add devices
-base_station = scenario.new_device(carrier_frequency=cf, bandwidth=bw)
-vehicle = scenario.new_device(carrier_frequency=cf, bandwidth=bw)
+base_station = scenario.new_device(**device_params)
+vehicle = scenario.new_device(**device_params)
 
 # Configure channel
-channel = TDL(model_type=TDLType.D, doppler_frequency=14/cf)
+channel = TDL(model_type=TDLType.D, doppler_frequency=14/device_params['carrier_frequency'])
 scenario.set_channel(base_station, vehicle, channel)
 
 # Add DSP

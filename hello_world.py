@@ -4,11 +4,14 @@ from hermespy.simulation import SimulatedDevice
 from hermespy.modem import TransmittingModem, RootRaisedCosineWaveform
 
 # Simulation parameters
-cf = 26e9
-bw = 1e9
+device_params = {
+    'oversampling_factor': 4,
+    'carrier_frequency': 6e9,
+    'bandwidth': 960e6,
+}
 
 # Add a new device
-base_station = SimulatedDevice(carrier_frequency=cf, bandwidth=bw)
+base_station = SimulatedDevice(**device_params)
 
 # Add DSP
 waveform = RootRaisedCosineWaveform()
