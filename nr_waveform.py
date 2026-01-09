@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from hermespy.modem import ElementType, OFDMWaveform, SymbolSection, PrefixType, GridElement, GridResource, OrthogonalLeastSquaresChannelEstimation, OrthogonalZeroForcingChannelEqualization
+from hermespy.modem import (
+    ElementType,
+    OFDMWaveform,
+    SymbolSection, 
+    PrefixType,
+    GridElement,
+    GridResource,
+    OrthogonalLeastSquaresChannelEstimation,
+    OrthogonalZeroForcingChannelEqualization,
+    SchmidlCoxPilotSection,
+    SchmidlCoxSynchronization
+)
 
 
 class NRSubframe(OFDMWaveform):
@@ -10,7 +21,7 @@ class NRSubframe(OFDMWaveform):
     __DEFAULT_CYCLIC_PREFIX_RATIO = 4.76e-2  # Normal CP
     __DEFAULT_NUM_FRAME_SYMBOLS = 14  # 10 ms frame with 1 ms subframes and 14 symbols per subframe
 
-    def __init__(self) -> None:
+    def __init__(self, synchronize: bool = False) -> None:
 
         # Build a frame structure
         grid_resources = [GridResource(
@@ -22,7 +33,7 @@ class NRSubframe(OFDMWaveform):
                 GridElement(ElementType.REFERENCE, 1),
             ],
         )]
-        grid_structure = [SymbolSection(self.__DEFAULT_NUM_FRAME_SYMBOLS, [0], 2)]
+        grid_structure = [SymbolSection(self.__DEFAULT_NUM_FRAME_SYMBOLS, [0])]
 
         OFDMWaveform.__init__(
             self,
@@ -35,3 +46,8 @@ class NRSubframe(OFDMWaveform):
         # Add channel estimation & equalization
         self.channel_estimation = OrthogonalLeastSquaresChannelEstimation()
         self.channel_equalization = OrthogonalZeroForcingChannelEqualization()
+        
+        # Add synchronization if requested
+        if synchronize:
+            self.synchronization = SchmidlCoxSynchronization()
+            self.pilot_section = SchmidlCoxPilotSection()
