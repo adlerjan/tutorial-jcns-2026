@@ -21,8 +21,7 @@ device_params = {
 }
 
 # Add USRP device
-loop = HardwareLoop[UsrpSystem, UsrpDevice](UsrpSystem())
-usrp = loop.new_device(**device_params)
+
 
 # Configure a simplex link (transmitting and receiving modem) with
 # a 5G NR-like subframe waveform
@@ -43,9 +42,7 @@ usrp.receivers.add(jcas_dsp)
 usrp.receivers.add(rx_modem)
 
 # Add visualization hooks
-loop.add_plot(DeviceReceptionPlot(usrp, 'USRP Reception'))
-loop.add_plot(ReceivedConstellationPlot(rx_modem, 'Vehicle Rx'))
-loop.add_plot(RadarRangePlot(jcas_dsp, 'USRP JCAS Range'))
+
 
 # Run loop
 loop.num_drops = 100

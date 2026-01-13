@@ -12,16 +12,13 @@ device_params = {
 }
 
 # Add a single new device
-device = SimulatedDevice(**device_params)
+
 
 # Configure transmitting modem generating a root-raised cosine waveform
-waveform = RootRaisedCosineWaveform()
-dsp = TransmittingModem(waveform=waveform)
-device.add_dsp(dsp)
+
 
 # Generate a single transmission base-band signal
-transmission = device.transmit()
-transmission.mixed_signal.plot(title='Base Station Tx')
+
 
 # Display plots
 plt.show()
