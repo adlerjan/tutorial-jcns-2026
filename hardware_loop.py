@@ -24,7 +24,8 @@ device_params = {
 loop = HardwareLoop[UsrpSystem, UsrpDevice](UsrpSystem())
 usrp = loop.new_device(**device_params)
 
-# Configure 5G NR-like OFDM waveform
+# Configure a simplex link (transmitting and receiving modem) with
+# a 5G NR-like subframe waveform
 waveform = NRSubframe(synchronize=True)
 waveform.modulation_order = 4
 jcas_dsp = MatchedFilterJcas(
