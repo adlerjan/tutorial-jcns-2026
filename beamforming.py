@@ -41,7 +41,7 @@ base_station.trajectory = StaticTrajectory(Transformation.From_Translation([0, 0
 vehicle.trajectory = LinearTrajectory(
     Transformation.From_Translation([100, -25, 0]),
     Transformation.From_Translation([100, 25, 0]),
-    1.0,
+    4.0,
 )
 # simulation.scenario.visualize()
 # plt.show()
@@ -64,13 +64,13 @@ beamformer.transmit_focus = DeviceFocus(vehicle)
 base_station.transmit_coding[0] = beamformer
 
 # Generate & visualize a single drop
-drop = simulation.drop()
-drop.device_transmissions[0].mixed_signal.plot(title='BS Tx')
-drop.device_receptions[1].impinging_signals[0].plot(title='Vehicle Rx')
-drop.device_receptions[1].operator_receptions[0].equalized_symbols.plot_constellation(title='Vehicle Rx')
+#drop = simulation.drop()
+#drop.device_transmissions[0].mixed_signal.plot(title='BS Tx')
+#drop.device_receptions[1].impinging_signals[0].plot(title='Vehicle Rx')
+#drop.device_receptions[1].operator_receptions[0].equalized_symbols.plot_constellation(title='Vehicle Rx')
 
-plt.show()
-exit()
+#plt.show()
+#exit()
 
 # Configure a parameter sweep over all numerology- and order-candidates
 simulation.new_dimension('bandwidth', numerology_bandwidths, *simulation.devices, plot_scale='log')
@@ -84,8 +84,8 @@ simulation.add_evaluator(drx)
 simulation.add_evaluator(ber)
 
 # Run the simulation every .1 seconds
-simulation.drop_interval = 0.05
-simulation.num_samples = 1000
+simulation.drop_interval = 0.25
+simulation.num_samples = 100
 result = simulation.run()
 
 # Visualize the throughput results
