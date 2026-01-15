@@ -29,25 +29,45 @@ array = SimulatedUniformArray(
 )
 
 # Initialize a simulation with two devices representing base station and vehicle
-
+simulation = Simulation()
+base_station = simulation.new_device(**device_params, antennas=array)
+vehicle = simulation.new_device(**device_params)
 
 # Specify device trajectories (i.e spatial scenario assumptions)
-
+base_station.trajectory = StaticTrajectory(Transformation.From_Translation([0.0, 0.0, 10.0]))
+vehicle.trajectory = LinearTrajectory(
+    Transformation.From_Translation([100, -25, 0.]),
+    Transformation.From_Translation([100, 25, 0.]),
+    1.0,
+)
 
 # Link the by a 3GPP geometry-base stochastic channel model
 # with urban macrocell characteristics and line of sight conditions
-
+channel = UrbanMacrocells(expected_state=O2IState.LOS)
+simulation.set_channel(base_station, vehicle, channel)
 
 # Configure a conventional beamformer illuminating the vehicle from the base station
-
+beamformer = ConventionalBeamformer()
+beamformer.transmit_focus = DeviceFocus(vehicle)
+base_station.transmit_coding[0] = beamformer
 
 # Configure a simplex link (transmitting and receiving modem) with
 # a 5G NR-like subframe waveform
+waveform = NRSubframe()
+link = SimplexLink(waveform=waveform)
+link.connect(base_station, vehicle)
 
 # Configure a parameter sweep over all numerology- and order-candidates
-
+simulation.new_dimension('bandwidth', numerology_bandwidths, *simulation.devices)
+simulation.new_dimension('modulation_order', [4, 16, 64], waveform)
 
 # Evaluate throughput over the parameter sweep
+simulation.add_evaluator(ThroughputEvaluator(link, link, False))
+simulation.add_evaluator(BitErrorEvaluator(link, link, plot_surface=False))
 
+# Run the simulation every .25 seconds
+simulation.drop_interval = .25
+simulation.num_drops = 100
 
-# Run the simulation every .1 seconds
+simulation.plot_results = True
+simulation.run()
